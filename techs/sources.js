@@ -2,27 +2,24 @@
  * sources
  * =======
  *
- * Собирает информацию о директориях с исходным кодом проекта, предоставляет `?.levels`.
+ * Собирает информацию о директориях с исходным кодом проекта, предоставляет `?.sources`.
  *
  * **Опции**
  *
- * * *String* **target** — Результирующий таргет. По умолчанию — `?.levels`.
- * * *(Boolean)[]* **auto** — Уровни переопределения. Полные пути к папкам с уровнями переопределения.
- * * *(String)[]* **sources** — Исходные директории.
+ * * *String* **target** — Результирующий таргет. По умолчанию — `?.sources`.
+ * * *Boolean* **auto** — Автоматический сбор директорий с исходниками на основе `package.json`.
+ *   По умолчанию включено.
+ * * *String[]* **sources** — Исходные директории.
  *
  * **Пример**
  *
  * ```javascript
- * nodeConfig.addTech([ require('enb-bevis/techs/sources'), {
- *   sources: [
- *     'blocks'
- *   ].map(function (sourcePath) { return config.resolvePath(sourcePath); })
- * } ]);
+ * nodeConfig.addTech(require('enb-bevis/techs/sources'));
  * ```
  */
 var fs = require('fs');
-var SourceRoot = require('enb/lib/sources/source-root');
-var Sources = require('enb/lib/levels/levels');
+var SourceRoot = require('../lib/sources/source-root');
+var Sources = require('../lib/sources/sources');
 var inherit = require('inherit');
 var path = require('path');
 
@@ -34,9 +31,9 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
     init: function () {
         this.__base.apply(this, arguments);
         this._sources = this.getOption('sources');
-        var auto = this.getOption('auto');
-        this._auto = typeof auto === 'boolean' ? auto : false;
-        this._target = this.node.unmaskTargetName(this.getOption('target', '?.levels'));
+        this._auto = this.getOption('auto', true);
+        this._profile = this.getOption('profile', 'default');
+        this._target = this.node.unmaskTargetName(this.getOption('target', '?.sources'));
     },
 
     getTargets: function () {
@@ -44,6 +41,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
     },
 
     build: function () {
+        var profileName = this._profile;
         var sourceList = [];
         var projectRoot = this.node.getRootDir();
         var packagesDirectory = projectRoot + '/node_modules';
@@ -61,18 +59,26 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
                 }
                 if (jsonData.enb) {
                     var enb = jsonData.enb;
-                    if (enb.sources) {
-                        sources = sources.concat(enb.sources.map(function (sourceName) {
-                            return packageDir + '/' + sourceName;
-                        }));
+                    var enbSources = enb.sources || [];
+                    var enbDependencies = enb.dependencies || [];
+                    if (enb.profiles && enb.profiles[profileName]) {
+                        var profile = enb.profiles[profileName];
+                        if (profile.sources) {
+                            enbSources = enbSources.concat(profile.sources);
+                        }
+                        if (profile.dependencies) {
+                            enbDependencies = enbDependencies.concat(profile.dependencies);
+                        }
                     }
-                    if (enb.dependencies) {
-                        enb.dependencies.forEach(function (packageName) {
-                            sources = sources.concat(readPackageSources(packagesDirectory + '/' + packageName));
-                        });
-                    }
+                    sources = sources.concat(enbSources.map(function (sourceName) {
+                        return packageDir + '/' + sourceName;
+                    }));
+                    enbDependencies.forEach(function (packageName) {
+                        sources = sources.concat(readPackageSources(packagesDirectory + '/' + packageName));
+                    });
                 }
             }
+            return sources;
         }
 
         if (this._auto) {
