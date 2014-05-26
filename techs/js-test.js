@@ -4,6 +4,7 @@
  */
 var vow = require('vow');
 var vowFs = require('enb/lib/fs/async-fs');
+var File = require('enb-source-map/lib/file');
 
 module.exports = require('enb/lib/build-flow').create()
     .name('js-test')
