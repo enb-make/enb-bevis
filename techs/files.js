@@ -48,9 +48,9 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
                 dependencies.forEach(function (dep) {
                     var entities;
                     if (dep.elemName) {
-                        entities = sources.getElemEntities(dep.blockName, dep.elemName, dep.modName, dep.modVal);
+                        entities = sources.getElemEntities(dep.blockName, dep.elemName, dep.modName, dep.modValue);
                     } else {
-                        entities = sources.getBlockEntities(dep.blockName, dep.modName, dep.modVal);
+                        entities = sources.getBlockEntities(dep.blockName, dep.modName, dep.modValue);
                     }
                     files.addFiles(entities.files);
                     dirs.addFiles(entities.dirs);

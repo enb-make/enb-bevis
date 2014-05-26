@@ -31,7 +31,9 @@ var vowFs = require('enb/lib/fs/async-fs');
 var DepsResolver = require('../lib/deps/deps-resolver');
 var inherit = require('inherit');
 var YamlFormat = require('../lib/deps/formats/yaml');
+var ModulesFormat = require('../lib/deps/formats/modules-js');
 var asyncRequire = require('enb/lib/fs/async-require');
+var dropRequireCache = require('enb/lib/fs/drop-require-cache');
 
 module.exports = inherit(require('enb/lib/tech/base-tech'), {
 
@@ -53,7 +55,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
         this._jsSuffixes = this.getOption('jsSuffixes', ['js']);
 
         this._sourcesFile = this.node.unmaskTargetName(
-            this.getOption('sources', this.node.getTargetName('levels'))
+            this.getOption('sources', this.node.getTargetName('sources'))
         );
     },
 
@@ -80,10 +82,11 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
             sourcesToRequire.push(this._sourceDepsFile);
         }
 
-        var suffixes = this._jsSuffixes.concat('deps.yaml');
+        var jsSuffixes = this._jsSuffixes;
+        var suffixes = jsSuffixes.concat('deps.yaml');
         return this.node.requireSources(sourcesToRequire).spread(function (sources) {
             var depFiles = [].concat.apply([], suffixes.map(function (suffix) {
-                sources.getFilesBySuffix(suffix);
+                return sources.getFilesBySuffix(suffix);
             }));
             if (cache.needRebuildFile('deps-file', targetPath) ||
                 (sourceDepsFilename ? cache.needRebuildFile('source-file', sourceDepsFilename) : false) ||
@@ -101,7 +104,9 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
                 }
 
                 return sourceReadPromise.then(function (startingDeps) {
-                    var depsResolver = new DepsResolver(sources);
+                    var depsResolver = new DepsResolver(sources, jsSuffixes.map(function (suffix) {
+                        return new ModulesFormat(suffix);
+                    }).concat(new YamlFormat()));
                     return depsResolver.addDecls(depsResolver.normalizeDeps(startingDeps)).then(function () {
                         var resolvedDeps = depsResolver.resolve();
                         return vowFs.write(
