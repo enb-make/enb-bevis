@@ -241,5 +241,5 @@ js-test
 **Пример**
 
 ```javascript
-nodeConfig.addTech(require('enb-bevis/techs/source-deps-test'));
+nodeConfig.addTech(require('enb-bevis/techs/js-test'));
 ```
