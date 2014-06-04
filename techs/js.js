@@ -40,7 +40,7 @@ module.exports = require('enb/lib/build-flow').create()
     .target('target', '?.{lang}.js')
     .useFileList(['js'])
     .useSourceFilename('i18nFile', '?.lang.{lang}.js')
-    .useSourceFilename('btFile', '?.bt-client.js')
+    .useSourceFilename('btFile', '?.bt.client.js')
     .builder(function (jsFiles, i18nFile, btFile) {
         var node = this.node;
         var destPath = node.resolvePath(this._target);
