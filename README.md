@@ -8,7 +8,7 @@ enb-bevis [![Build Status](https://travis-ci.org/enb-make/enb-bevis.png?branch=m
 
 Сборка обычного BEViS-проекта выглядит так:
 
-**.enb/make.js**:
+**.enb/make.js:**
 ```javascript
     // ...
     config.node('pages/index', function (nodeConfig) {
@@ -85,7 +85,17 @@ enb-bevis [![Build Status](https://travis-ci.org/enb-make/enb-bevis.png?branch=m
     // ...
 ```
 
-
+**package.json:**
+```javascript
+//...
+"enb": {
+  "dependencies": ["islets"], // зависимость от islets
+  "sources": [
+    "blocks" // директории для блоков проекта
+  ]
+}
+//...
+```
 
 sources
 -------

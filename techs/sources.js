@@ -10,6 +10,7 @@
  * * *Boolean* **auto** — Автоматический сбор директорий с исходниками на основе `package.json`.
  *   По умолчанию включено.
  * * *String[]* **sources** — Исходные директории.
+ * * *String[]* **dependencies** — Пакеты, от которых зависит проект.
  *
  * **Пример**
  *
@@ -32,6 +33,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
     init: function () {
         this.__base.apply(this, arguments);
         this._sources = this.getOption('sources');
+        this._dependencies = this.getOption('dependencies');
         this._auto = this.getOption('auto', true);
         this._profile = this.getOption('profile', 'default');
         this._target = this.node.unmaskTargetName(this.getOption('target', '?.sources'));
@@ -84,6 +86,12 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
 
         if (this._auto) {
             sourceList = sourceList.concat(readPackageSources(projectRoot));
+        }
+
+        if (this._dependencies) {
+            this._dependencies.forEach(function (packageName) {
+                sourceList = sourceList.concat(readPackageSources(packagesDirectory + '/' + packageName));
+            });
         }
 
         if (this._sources) {
