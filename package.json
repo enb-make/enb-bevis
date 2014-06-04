@@ -1,6 +1,6 @@
 {
   "name": "enb-bevis",
-  "version": "0.0.32",
+  "version": "0.0.39",
   "scripts": {
     "test": "npm run-script jshint && npm run-script check-style",
     "jshint": "jshint .",
@@ -17,12 +17,12 @@
   },
   "homepage": "https://github.com/enb-make/enb-bevis",
   "peerDependencies": {
-    "enb": ">=0.8.45"
+    "enb": ">=0.13.2"
   },
   "devDependencies": {
     "jscs": "~1.2.4",
     "jshint": "~2.4.2",
-    "enb": ">=0.8.45",
+    "enb": ">=0.13.2",
     "enb-validate-code": "0.0.1"
   },
   "dependencies": {

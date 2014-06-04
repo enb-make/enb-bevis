@@ -1,7 +1,21 @@
 /**
  * js-test
  * =======
+ *
+ * Формирует *test.js* на основе деклараций тестов.
+ *
+ * **Опции**
+ *
+ * * *String* **target** — Результирующий файл. По умолчанию — `?.test.js`.
+ * * *RegExp|String* **fileMask** — Фильтр для тестов.
+ *
+ * **Пример**
+ *
+ * ```javascript
+ * nodeConfig.addTech(require('enb-bevis/techs/source-deps-test'));
+ * ```
  */
+
 var vow = require('vow');
 var vowFs = require('enb/lib/fs/async-fs');
 var File = require('enb-source-map/lib/file');

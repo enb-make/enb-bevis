@@ -6,6 +6,7 @@
  *
  * **Опции**
  *
+ * * *String|Array|Object* **sourceDeps** — Исходные зависимости. Можно указать сразу, чтобы не создавать файл.
  * * *String* **sourceDepsFile** — Файл с исходными зависимостями. По умолчанию — `?.deps.yaml`.
  * * *String* **sources** — Исходный sources. По умолчанию — `?.sources`.
  * * *String* **target** — Результирующий deps. По умолчанию — `?.dest-deps.js`.
@@ -26,6 +27,7 @@
  * }]);
  * ```
  */
+
 var vow = require('vow');
 var vowFs = require('enb/lib/fs/async-fs');
 var DepsResolver = require('../lib/deps/deps-resolver');

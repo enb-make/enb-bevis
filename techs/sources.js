@@ -17,6 +17,7 @@
  * nodeConfig.addTech(require('enb-bevis/techs/sources'));
  * ```
  */
+
 var fs = require('fs');
 var SourceRoot = require('../lib/sources/source-root');
 var Sources = require('../lib/sources/sources');
@@ -102,7 +103,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
 
         var sourceRoots = sourcePaths.map(function (sourcePath) {
             if (!this.node.buildState[sourcePath]) {
-                this.node.buildState[sourcePath] = SourceRoot.loadFromDirectory(sourcePath);
+                this.node.buildState[sourcePath] = SourceRoot.loadFromPath(sourcePath);
             }
             return this.node.buildState[sourcePath];
         }, this);
