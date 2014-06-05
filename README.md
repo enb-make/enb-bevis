@@ -35,8 +35,7 @@ enb-bevis [![Build Status](https://travis-ci.org/enb-make/enb-bevis.png?branch=m
             [require('enb-autopolyfiller/techs/autopolyfiller'), {
                 source: '?.source.{lang}.js',
                 target: '?.{lang}.js',
-                browsers: browserSupport,
-                excludes: ['Promise']
+                browsers: browserSupport
             }],
 
             // Сборка CSS
