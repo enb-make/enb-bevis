@@ -62,7 +62,8 @@ enb-bevis [![Build Status](https://travis-ci.org/enb-make/enb-bevis.png?branch=m
             nodeConfig.addTechs([
                 [require('enb/techs/file-copy'), {source: '?.css', target: '_?.css'}],
                 [require('enb/techs/file-copy'), {source: '?.ie.css', target: '_?.ie.css'}],
-                [require('enb/techs/file-copy'), {source: '?.lang.{lang}.js', target: '_?.lang.{lang}.js'}]
+                [require('enb/techs/file-copy'), {source: '?.lang.{lang}.js', target: '_?.lang.{lang}.js'}],
+                [require('enb/techs/file-copy'), {source: '?.{lang}.js', target: '_?.{lang}.js'}]
             ]);
         });
 
@@ -70,7 +71,8 @@ enb-bevis [![Build Status](https://travis-ci.org/enb-make/enb-bevis.png?branch=m
             nodeConfig.addTechs([
                 [require('enb-borschik/techs/borschik'), {source: '?.css', target: '_?.css', freeze: true}],
                 [require('enb-borschik/techs/borschik'), {source: '?.ie.css', target: '_?.ie.css', freeze: true}],
-                [require('enb-borschik/techs/borschik'), {source: '?.lang.{lang}.js', target: '_?.lang.{lang}.js'}]
+                [require('enb-borschik/techs/borschik'), {source: '?.lang.{lang}.js', target: '_?.lang.{lang}.js'}],
+                [require('enb-borschik/techs/borschik'), {source: '?.{lang}.js', target: '_?.{lang}.js'}]
             ]);
         });
 
