@@ -39,6 +39,7 @@ module.exports = require('enb/lib/build-flow').create()
     .name('js')
     .target('target', '?.{lang}.js')
     .useFileList(['js'])
+    .defineOption('useSourceMap', true)
     .useSourceFilename('i18nFile', '?.lang.{lang}.js')
     .useSourceFilename('btFile', '?.bt.client.js')
     .builder(function (jsFiles, i18nFile, btFile) {
@@ -60,11 +61,11 @@ module.exports = require('enb/lib/build-flow').create()
                 };
             });
         })).then(function (results) {
-            var file = new File(destPath, true);
+            var file = new File(destPath, this._useSourceMap);
             results.forEach(function (result) {
                 file.writeFileContent(result.filename, result.content);
             });
             return file.render();
-        });
+        }.bind(this));
     })
     .createTech();
