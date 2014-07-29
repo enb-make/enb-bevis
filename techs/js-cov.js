@@ -15,7 +15,7 @@ module.exports = require('enb/lib/build-flow').create()
         return vowFs.read(sourceFilename, 'utf8').then(function (content) {
             var instrumenter = new Instrumenter(new BasenameFileSet());
             this._excludes.forEach(function (exclude) {
-                instrumenter.addExclude(exclude)
+                instrumenter.addExclude(exclude);
             });
             return instrumenter.instrument(content, sourceFilename);
         }.bind(this));
