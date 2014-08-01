@@ -73,12 +73,12 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
                             enbDependencies = enbDependencies.concat(profile.dependencies);
                         }
                     }
-                    sources = sources.concat(enbSources.map(function (sourceName) {
-                        return packageDir + '/' + sourceName;
-                    }));
                     enbDependencies.forEach(function (packageName) {
                         sources = sources.concat(readPackageSources(packagesDirectory + '/' + packageName));
                     });
+                    sources = sources.concat(enbSources.map(function (sourceName) {
+                        return packageDir + '/' + sourceName;
+                    }));
                 }
             }
             return sources;
