@@ -1,7 +1,7 @@
 var vowFs = require('enb/lib/fs/async-fs');
 var separatedCoverage = require('separated-coverage');
 var Instrumenter = separatedCoverage.Instrumenter;
-var BasenameFileSet = separatedCoverage.BasenameFileSet;
+var BasenameFileSet = separatedCoverage.fileSets.BasenameFileSet;
 
 /**
  * Инструментирует JS-код для coverage.
@@ -13,7 +13,7 @@ module.exports = require('enb/lib/build-flow').create()
     .defineOption('excludes', [])
     .builder(function (sourceFilename) {
         return vowFs.read(sourceFilename, 'utf8').then(function (content) {
-            var instrumenter = new Instrumenter(new BasenameFileSet());
+            var instrumenter = new Instrumenter(new BasenameFileSet(), process.cwd());
             this._excludes.forEach(function (exclude) {
                 instrumenter.addExclude(exclude);
             });
