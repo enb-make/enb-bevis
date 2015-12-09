@@ -10,6 +10,7 @@
  * * *String* **btFile** — Файл с BT-шаблонами. По умолчанию — `?.bt-client.js`.
  * * *String* **i18nFile** — Файл с переводами. По умолчанию — `?.{lang}.js`.
  * * *String* **lang** — Язык. Нет значения по умолчанию.
+ * * *Boolean* **freezeLinks** — Нужно ли замораживать ссылки внтри файлов. По умолчанию — `false`.
  *
  * **Пример**
  *
@@ -34,11 +35,13 @@
 var vow = require('vow');
 var vowFs = require('enb/lib/fs/async-fs');
 var File = require('enb-source-map/lib/file');
+var BorschikPreprocessor = require('enb-borschik/lib/borschik-preprocessor');
 
 module.exports = require('enb/lib/build-flow').create()
     .name('js')
     .target('target', '?.{lang}.js')
     .useFileList(['js'])
+    .defineOption('freezeLinks', false)
     .defineOption('useSourceMap', true)
     .useSourceFilename('i18nFile', '?.lang.{lang}.js')
     .useSourceFilename('btFile', '?.bt.client.js')
@@ -53,17 +56,36 @@ module.exports = require('enb/lib/build-flow').create()
         tasks.push(btFile);
         tasks.push(i18nFile);
 
-        return vow.all(tasks.map(function (filePath) {
-            return vowFs.read(filePath, 'utf8').then(function (content) {
-                return {
-                    filename: node.relativePath(filePath),
-                    content: content
-                };
+        var freezeLinks = this._freezeLinks;
+        return vow.all(tasks.map(function (filePath, index) {
+            if (!freezeLinks) {
+                return vowFs.read(filePath, 'utf8').then(function (content) {
+                    return {
+                        name: node.relativePath(filePath),
+                        content: content
+                    };
+                });
+            }
+
+            return node.createTmpFileForTarget('#' + index).then(function (tmpFile) {
+                return new BorschikPreprocessor()
+                    .preprocessFile(filePath, tmpFile, true, false, false)
+                    .then(function () {
+                        return vowFs.read(tmpFile, 'utf8');
+                    })
+                    .then(function (content) {
+                        return vowFs.remove(tmpFile).then(function () {
+                            return {
+                                name: node.relativePath(filePath),
+                                content: content
+                            };
+                        });
+                    });
             });
         })).then(function (results) {
             var file = new File(destPath, this._useSourceMap);
             results.forEach(function (result) {
-                file.writeFileContent(result.filename, result.content);
+                file.writeFileContent(result.name, result.content);
             });
             return file.render();
         }.bind(this));
