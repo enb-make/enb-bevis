@@ -1,6 +1,6 @@
 {
   "name": "enb-bevis",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "scripts": {
     "test": "npm run-script jshint && npm run-script check-style",
     "jshint": "jshint .",
