@@ -51,7 +51,9 @@ module.exports = require('enb/lib/build-flow').create()
 
         var tasks = [__dirname + '/../node_modules/ym/modules.js'];
         jsFiles.forEach(function (fileInfo) {
-            tasks.push(fileInfo.fullname);
+            if (tasks.indexOf(fileInfo.fullname) === -1) {
+                tasks.push(fileInfo.fullname);
+            }
         });
         tasks.push(btFile);
         tasks.push(i18nFile);
