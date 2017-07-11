@@ -30,6 +30,14 @@ module.exports = require('enb/lib/build-flow').create()
         var node = this.node;
         var destPath = node.resolvePath(this._target);
         var fileMask = this._fileMask;
+
+        var fullnames = testFiles.map(function (item) {
+            return item.fullname;
+        });
+        testFiles = testFiles.filter(function (item, index) {
+            return fullnames.indexOf(item.fullname) === index;
+        });
+
         testFiles = testFiles.filter(
             typeof fileMask === 'function' ? fileMask : function (file) {
             return fileMask.test(file.fullname);
